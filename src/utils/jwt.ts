@@ -1,15 +1,43 @@
-import { SignOptions } from "jsonwebtoken";
+import { JwtPayload, SignOptions } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
+import { Role } from "../generated/prisma/enums";
 
-const createToken = (payload: any, secret: string, options: SignOptions) => {
-  const token = jwt.sign(payload, secret, {
-    expiresIn: options,
-  } as SignOptions);
+interface TokenPayload extends JwtPayload{
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+type VerifyResult =
+  | { success: true; data: TokenPayload }
+  | { success: false; error: string };
+
+const createToken = (
+  payload: TokenPayload,
+  secret: string,
+  options: SignOptions,
+) => {
+  const token = jwt.sign(payload, secret, options);
 
   return token;
 };
 
+const verifyToken = async (token: string, secret: string): Promise<VerifyResult> => {
+  try {
+    const verifyToken = jwt.verify(token, secret) as TokenPayload;
+    return {
+      success: true,
+      data: verifyToken,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+};
 
 export const jwtUtils = {
-    createToken
-}
+  createToken,verifyToken
+};
