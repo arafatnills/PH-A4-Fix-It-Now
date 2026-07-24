@@ -1,11 +1,12 @@
 model User {
-  id       String             @id @default(uuid())
-  name     String
-  email    String             @unique
-  password String
-  role     Role               @default(CUSTOMER)
-  status   Status             @default(ACTIVE)
-  profile  TechnicianProfile?
+  id        String                @id @default(uuid())
+  name      String
+  email     String                @unique
+  password  String
+  role      Role                  @default(CUSTOMER)
+  status    Status                @default(ACTIVE)
+  profile   TechnicianProfile?
+  ctRequest CustomerToTechnician?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

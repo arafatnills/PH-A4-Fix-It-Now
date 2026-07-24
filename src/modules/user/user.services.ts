@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../../lib/prisma";
 import { URegister } from "./user.interface";
 import config from "../../config";
-
+import { Role } from "../../generated/prisma/enums";
 
 // create user and insert data into database
 const registerUserDB = async (payload: URegister) => {
@@ -51,4 +51,26 @@ const registerUserDB = async (payload: URegister) => {
   return user;
 };
 
-export const userServices = { registerUserDB };
+// ctRequest
+const ctRequestDB = async (role: Role, userId: string) => {
+  const isExists = await prisma.customerToTechnician.findUnique({
+    where: {
+      userId,
+    },
+  });
+
+  if(isExists){
+    return "you already requested!"
+  }
+
+  const requestUser = await prisma.customerToTechnician.create({
+    data: {
+      userId: userId,
+      role: role,
+    },
+  });
+
+  return requestUser;
+};
+
+export const userServices = { registerUserDB, ctRequestDB };

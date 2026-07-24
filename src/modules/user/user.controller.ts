@@ -16,6 +16,21 @@ const registerUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// request be a technician
+const ctRequest = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  const {role} = req.body;
+  const requestedUser = await userServices.ctRequestDB(role, userId);
+
+  sendResponse(res, {
+    success: true,
+    status: status.OK,
+    message: "thanks for requesting",
+    data: requestedUser,
+  });
+});
+
 export const userControllers = {
   registerUser,
+  ctRequest,
 };
