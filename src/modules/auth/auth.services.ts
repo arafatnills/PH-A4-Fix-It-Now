@@ -85,7 +85,29 @@ const genAccessToken = async (token: string) => {
   return { accessToken };
 };
 
+// my profile
+const myProfileDB = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    omit: {
+      password: true
+    },
+    include: {
+      profile: true
+    }
+  });
+
+  if (!user) {
+    throw new Error("user not found!");
+  }
+
+  return user;
+};
+
 export const authServices = {
   loginUserDB,
   genAccessToken,
+  myProfileDB,
 };

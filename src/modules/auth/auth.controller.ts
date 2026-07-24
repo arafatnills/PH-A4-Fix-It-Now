@@ -31,6 +31,7 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// generate accessToken using refreshToken
 export const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
   const { accessToken } = await authServices.genAccessToken(refreshToken);
@@ -50,6 +51,21 @@ export const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// my profile
+
+const myProfile = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  const me = await authServices.myProfileDB(userId);
+  sendResponse(res, {
+    success: true,
+    status: status.OK,
+    message: "my profile retrieved successfully!",
+    data: me,
+  });
+});
+
 export const authControllers = {
-  loginUser,refreshToken
+  loginUser,
+  refreshToken,
+  myProfile
 };
