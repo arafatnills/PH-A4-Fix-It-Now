@@ -19,6 +19,9 @@ const handelUserRequestDB = async (userId: string) => {
       data: {
         role: foundRequest.role,
       },
+      omit: {
+        password: true,
+      },
     });
 
     await tx.customerToTechnician.delete({
