@@ -1,8 +1,8 @@
-import { Role } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
+// handel user > customer to technician
 const handelUserRequestDB = async (userId: string) => {
-  const transitionResult = await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx) => {
     const foundRequest = await tx.customerToTechnician.findUnique({
       where: {
         userId,
@@ -32,10 +32,71 @@ const handelUserRequestDB = async (userId: string) => {
 
     return updatedUser;
   });
+};
 
-  return transitionResult;
+// create categories
+const createCategoryDB = async (catName: string) => {
+  const isCatExists = await prisma.category.findUnique({
+    where: {
+      name: catName.trim(),
+    },
+  });
+
+  if (isCatExists) {
+    throw new Error(`${catName} category is already exists!`);
+  }
+
+  return await prisma.category.create({
+    data: {
+      name: catName.trim(),
+    },
+  });
+};
+
+// update categories
+const updateCategoryDB = async (catName: string, catId: string) => {
+  const isCatExists = await prisma.category.findUnique({
+    where: {
+      id: catId,
+    },
+  });
+
+  if (!isCatExists) {
+    throw new Error(`${catName} is not found!`);
+  }
+
+  return await prisma.category.update({
+    where: {
+      id: catId,
+    },
+    data: {
+      name: catName.trim(),
+    },
+  });
+};
+
+// delete categories
+const deleteCategoryDB = async (catId: string) => {
+  const isCatExists = await prisma.category.findUnique({
+    where: {
+      id: catId,
+    },
+  });
+
+  if (!isCatExists) {
+    throw new Error(`category not found!`);
+  }
+
+  return await prisma.category.delete({
+    where: {
+      id: catId,
+    },
+  });
 };
 
 export const adminServices = {
   handelUserRequestDB,
+  createCategoryDB,
+  updateCategoryDB,
+  deleteCategoryDB
 };
