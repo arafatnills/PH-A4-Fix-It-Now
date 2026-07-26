@@ -4,11 +4,13 @@ type CService = {
   serviceName: string;
   price: number;
   categoryId: string;
+  city: string;
+  area: string
 };
 
 // create a services
 const createServiceDB = async (payload: CService, userId: string) => {
-  const { serviceName, price, categoryId } = payload;
+  const { serviceName, price, categoryId,city, area } = payload;
 
   const technicianProfile = await prisma.technicianProfile.findUnique({
     where: { userId },
@@ -33,6 +35,8 @@ const createServiceDB = async (payload: CService, userId: string) => {
       price,
       categoriesId: categoryId,
       technicianId: technicianProfile.id,
+      area: area.trim(),
+      city: city.trim()
     },
     include: {
       category: true,
@@ -40,4 +44,20 @@ const createServiceDB = async (payload: CService, userId: string) => {
   });
 };
 
-export const serviceServices = { createServiceDB };
+// get all services
+const getAllServicesDB = async ()=>{
+  const allServices = await prisma.service.findMany({
+    include: {
+      technician: true,
+      category: true
+    }
+  })
+  const count = await prisma.service.count()
+
+  return {
+    allServices,
+    count
+  }
+}
+
+export const serviceServices = { createServiceDB ,getAllServicesDB};
