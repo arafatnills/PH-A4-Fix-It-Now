@@ -1,7 +1,7 @@
 model Service {
   id           String            @id @default(uuid())
-  serviceName  String
-  categoriesId String
+  serviceName  String            @db.VarChar(75)
+  categoriesId String 
   category     Category          @relation(fields: [categoriesId], references: [id], onDelete: Cascade)
   technicianId String
   technician   TechnicianProfile @relation(fields: [technicianId], references: [id], onDelete: Cascade)

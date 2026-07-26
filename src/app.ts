@@ -6,6 +6,7 @@ import { userRoutes } from "./modules/user/user.routes";
 import { authRoutes } from "./modules/auth/auth.routes";
 import { adminRoutes } from "./modules/admin/admin.routes";
 import { categoryRoutes } from "./modules/category/category.routes";
+import { serviceRotes } from "./modules/service/service.routes";
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use('/api/users', userRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/categories', categoryRoutes)
+app.use('/api/services', serviceRotes)
 
 export default app;
