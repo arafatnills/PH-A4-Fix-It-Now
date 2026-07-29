@@ -8,3 +8,17 @@ enum Status {
   ACTIVE
   BLOCKED
 }
+
+enum PaymentStatus {
+  PAID
+  PENDING
+  FAILED
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}

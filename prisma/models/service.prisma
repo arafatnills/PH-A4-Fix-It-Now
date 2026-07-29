@@ -1,15 +1,16 @@
 model Service {
   id           String            @id @default(uuid())
   serviceName  String            @db.VarChar(75)
-  categoriesId String 
+  categoriesId String
   category     Category          @relation(fields: [categoriesId], references: [id], onDelete: Cascade)
   technicianId String
   technician   TechnicianProfile @relation(fields: [technicianId], references: [id], onDelete: Cascade)
   price        Decimal
-  city     String
-  area     String   
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  city         String?
+  area         String?
+  bookings     Booking[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   @@map("services")
 }
