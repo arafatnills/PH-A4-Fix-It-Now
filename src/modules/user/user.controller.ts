@@ -30,7 +30,19 @@ const ctRequest = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get all technicians
+const getAllTechnician = catchAsync(async (req: Request, res: Response)=>{
+  const result = await userServices.getAllTechnicianDB()
+    sendResponse(res, {
+    success: true,
+    status: status.OK,
+    message: "thanks for requesting",
+    data: result,
+  });
+} )
+
 export const userControllers = {
   registerUser,
   ctRequest,
+  getAllTechnician
 };

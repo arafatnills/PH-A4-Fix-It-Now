@@ -28,13 +28,15 @@ const getAllServices = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     status: status.CREATED,
-    message: "Service created successfully!",
+    message: "Service retrieved successfully!",
     total: service.count,
     data: service.allServices,
   });
 });
 
+
+
 export const serviceControllers = {
   createService,
-  getAllServices
+  getAllServices,
 };

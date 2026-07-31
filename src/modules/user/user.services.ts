@@ -59,8 +59,8 @@ const ctRequestDB = async (role: Role, userId: string) => {
     },
   });
 
-  if(isExists){
-    return "you already requested!"
+  if (isExists) {
+    return "you already requested!";
   }
 
   const requestUser = await prisma.customerToTechnician.create({
@@ -73,4 +73,19 @@ const ctRequestDB = async (role: Role, userId: string) => {
   return requestUser;
 };
 
-export const userServices = { registerUserDB, ctRequestDB };
+// get only technician
+const getAllTechnicianDB = async () => {
+  return await prisma.user.findMany({
+    where: {
+      role: 'TECHNICIAN'
+    },
+    omit: {
+      password: true
+    },
+    include:{
+      profile: true
+    }
+  });
+};
+
+export const userServices = { registerUserDB, ctRequestDB, getAllTechnicianDB };
