@@ -1,16 +1,17 @@
 import { prisma } from "../../lib/prisma";
+import { AppError } from "../../utils/AppError";
 
 type CService = {
   serviceName: string;
   price: number;
   categoryId: string;
   city: string;
-  area: string
+  area: string;
 };
 
 // create a services
 const createServiceDB = async (payload: CService, userId: string) => {
-  const { serviceName, price, categoryId,city, area } = payload;
+  const { serviceName, price, categoryId, city, area } = payload;
 
   const technicianProfile = await prisma.technicianProfile.findUnique({
     where: { userId },
@@ -24,10 +25,9 @@ const createServiceDB = async (payload: CService, userId: string) => {
       "Technician profile not found! Please request a TECHNICIAN profile first.",
     );
   }
-  if(technicianProfile.user.role !== 'TECHNICIAN'){
-    throw new Error("You don't have permission to create this service!")
+  if (technicianProfile.user.role !== "TECHNICIAN") {
+    throw new Error("You don't have permission to create this service!");
   }
-
 
   return await prisma.service.create({
     data: {
@@ -36,7 +36,7 @@ const createServiceDB = async (payload: CService, userId: string) => {
       categoriesId: categoryId,
       technicianId: technicianProfile.id,
       area: area.trim(),
-      city: city.trim()
+      city: city.trim(),
     },
     include: {
       category: true,
@@ -45,19 +45,35 @@ const createServiceDB = async (payload: CService, userId: string) => {
 };
 
 // get all services
-const getAllServicesDB = async ()=>{
+const getAllServicesDB = async () => {
   const allServices = await prisma.service.findMany({
     include: {
       technician: true,
-      category: true
-    }
-  })
-  const count = await prisma.service.count()
+      category: true,
+    },
+  });
+  const count = await prisma.service.count();
 
   return {
     allServices,
-    count
-  }
-}
+    count,
+  };
+};
 
-export const serviceServices = { createServiceDB ,getAllServicesDB};
+// get single services
+const getSingleServicesDB = async (id: string) => {
+  const singleService = await prisma.service.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!serviceServices) throw new AppError(404, "service not found!");
+
+  return singleService;
+};
+export const serviceServices = {
+  createServiceDB,
+  getAllServicesDB,
+  getSingleServicesDB,
+};

@@ -34,9 +34,21 @@ const getAllServices = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// get single services
+const getSingleServices = catchAsync(async (req: Request, res: Response) => {
+  const {id}= req.params
+  const service = await serviceServices.getSingleServicesDB(id as string);
 
+  sendResponse(res, {
+    success: true,
+    status: status.OK,
+    message: "Service single successfully!",
+    data: service
+  });
+});
 
 export const serviceControllers = {
   createService,
   getAllServices,
+  getSingleServices,
 };
