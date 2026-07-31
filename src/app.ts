@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import config from "./config";
 import cookieParser from "cookie-parser";
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/', (req, res)=>{
+app.get('/', (req: Request, res: Response)=>{
   res.status(200).json({message: 'server is running!'})
 })
 
