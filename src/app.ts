@@ -26,10 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get('/', (req: Request, res: Response)=>{
-  res.status(200).json({message: 'server is running!'})
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({ message: 'Server is running!' });
 })
-
 
 app.use('/api/users', userRoutes)
 app.use('/api/auth', authRoutes)
