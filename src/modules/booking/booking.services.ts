@@ -27,6 +27,13 @@ const getMyBookingsDB = async (customerId: string) => {
     where: {
       customerId,
     },
+    include: {
+      service: {
+        select: {
+          serviceName: true
+        }
+      }
+    }
   });
 
   return result;
