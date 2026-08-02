@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { AppError } from "../../utils/AppError";
 import { CBooking } from "./booking.interface";
 
 // create bookings
@@ -6,6 +7,36 @@ const createBookingDB = async (payload: CBooking, customerId: string) => {
   const { technicianId, serviceId, scheduledAt } = payload;
   const scheduledDate = new Date(scheduledAt);
   const currentDate = new Date();
+
+  const technician = await prisma.technicianProfile.findUnique({
+    where: {
+      id: technicianId,
+    },
+    include: {
+      user: {
+        select: {
+          role: true,
+        },
+      },
+    },
+  });
+
+  if (!technician || technician.user.role !== "TECHNICIAN")
+    throw new AppError(404, "technician not found!");
+
+  const service = await prisma.service.findUnique({
+    where: {
+      id: serviceId,
+    },
+  });
+
+  if (!service) throw new AppError(404, "Service not found!");
+
+  if (service.technicianId !== technicianId)
+    throw new AppError(
+      400,
+      "This service does not belong to the specified technician!",
+    );
 
   if (scheduledDate < currentDate) {
     throw new Error("Scheduled time cannot be in the past!");
@@ -30,10 +61,10 @@ const getMyBookingsDB = async (customerId: string) => {
     include: {
       service: {
         select: {
-          serviceName: true
-        }
-      }
-    }
+          serviceName: true,
+        },
+      },
+    },
   });
 
   return result;
@@ -86,20 +117,17 @@ const acceptBookingDB = async (userId: string, bookingId: string) => {
     },
   });
 
-
-
   if (!booking) {
     throw new Error("booking not found!");
   }
-  
+
   if (booking.technicianId !== technicianProfile.id) {
     throw new Error("Forbidden: you don't have permission!");
   }
-  
-  if(booking.status === 'ACCEPTED'){
-    throw new Error('this booking was already accepted!')
-  }
 
+  if (booking.status === "ACCEPTED") {
+    throw new Error("this booking was already accepted!");
+  }
 
   return await prisma.booking.update({
     where: {

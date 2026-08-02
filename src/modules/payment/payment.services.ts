@@ -3,6 +3,7 @@ import { prisma } from "../../lib/prisma";
 import { stripe } from "../../lib/stripe";
 import { AppError } from "../../utils/AppError";
 
+// create checkout session
 const createCheckoutSessionDB = async (
   bookingId: string,
   customerId: string,
@@ -96,4 +97,61 @@ const createCheckoutSessionDB = async (
   return { checkout: session.url };
 };
 
-export const paymentServices = { createCheckoutSessionDB };
+// handel webhook
+const handelWebhookDB = async (payload: Buffer, signature: string) => {
+  const endpointSecret = config.stripe_webhook_secret;
+  const event = stripe.webhooks.constructEvent(
+    payload,
+    signature,
+    endpointSecret,
+  );
+
+  const trxResult = await prisma.$transaction(async (tx) => {
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object;
+        const payment = await tx.payment.update({
+          where: {
+            transactionId: session.id,
+          },
+          data: {
+            status: "PAID",
+            paidAt: new Date(),
+          },
+        });
+
+        await tx.booking.update({
+          where: {
+            id: payment.bookingId,
+          },
+          data: {
+            status: "INPROGRESS",
+          },
+        });
+
+        break;
+      }
+
+      case "checkout.session.expired": {
+        const paymentFailed = event.data.object;
+        await tx.payment.update({
+          where: {
+            transactionId: paymentFailed.id,
+          },
+          data: {
+            status: "FAILED",
+          },
+        });
+        break;
+      }
+
+      default:
+        console.log(`Event dos't match ${event.type}`);
+        break;
+    }
+  });
+
+  return trxResult;
+};
+
+export const paymentServices = { createCheckoutSessionDB, handelWebhookDB };

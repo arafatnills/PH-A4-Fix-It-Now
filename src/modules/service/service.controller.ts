@@ -27,7 +27,7 @@ const getAllServices = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse(res, {
     success: true,
-    status: status.CREATED,
+    status: status.OK,
     message: "Service retrieved successfully!",
     total: service.count,
     data: service.allServices,

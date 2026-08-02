@@ -21,4 +21,5 @@ enum BookingStatus {
   REJECTED
   COMPLETED
   CANCELLED
+  INPROGRESS
 }
