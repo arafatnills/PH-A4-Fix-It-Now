@@ -3,4 +3,5 @@ export interface URegister {
   email: string;
   password: string;
   bio?: string;
+  profilePhoto?: string
 }

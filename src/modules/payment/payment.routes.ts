@@ -1,5 +1,4 @@
 import { Router } from "express";
-import express from "express";
 
 import { paymentControllers } from "./payment.controller";
 import { auth } from "../../middleware/auth.middleware";

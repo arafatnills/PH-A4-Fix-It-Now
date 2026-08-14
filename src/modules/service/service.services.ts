@@ -4,22 +4,25 @@ import { AppError } from "../../utils/AppError";
 type CService = {
   serviceName: string;
   price: number;
-  categoryId: string;
+  categoriesId: string;
   city: string;
   area: string;
+  description: string;
+  thumbnail: string
 };
 
 // create a services
 const createServiceDB = async (payload: CService, userId: string) => {
-  const { serviceName, price, categoryId, city, area } = payload;
+  const { serviceName, price, categoriesId, city, area, description,thumbnail } = payload;
 
-  const technicianProfile = await prisma.technicianProfile.findUnique({
+  const technicianProfile = await prisma.technician.findUnique({
     where: { userId },
     include: {
       user: true,
     },
   });
 
+  
   if (!technicianProfile) {
     throw new Error(
       "Technician profile not found! Please request a TECHNICIAN profile first.",
@@ -33,10 +36,12 @@ const createServiceDB = async (payload: CService, userId: string) => {
     data: {
       serviceName: serviceName.trim(),
       price,
-      categoriesId: categoryId,
-      technicianId: technicianProfile.id,
-      area: area.trim(),
+      categoriesId,
       city: city.trim(),
+      area: area.trim(),
+      description: description.trim(),
+      technicianId: technicianProfile.id,
+      thumbnail
     },
     include: {
       category: true,
@@ -48,8 +53,18 @@ const createServiceDB = async (payload: CService, userId: string) => {
 const getAllServicesDB = async () => {
   const allServices = await prisma.service.findMany({
     include: {
-      technician: true,
-      category: true,
+      technician: {
+        select: {
+          id: true,
+          userId: true
+        }
+      },
+      category: {
+        select: {
+          name: true,
+          id: true
+        }
+      },
     },
   });
   const count = await prisma.service.count();
@@ -66,6 +81,13 @@ const getSingleServicesDB = async (id: string) => {
     where: {
       id,
     },
+    include: {
+      category:{
+        select: {
+          name: true
+        }
+      }
+    }
   });
 
   if (!serviceServices) throw new AppError(404, "service not found!");

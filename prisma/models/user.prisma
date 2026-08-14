@@ -5,7 +5,8 @@ model User {
   password  String
   role      Role                  @default(CUSTOMER)
   status    Status                @default(ACTIVE)
-  profile   TechnicianProfile?
+  profilePhoto String?
+  profile   Technician?
   ctRequest CustomerToTechnician?
   bookings  Booking[]
   payments Payment[]

@@ -6,7 +6,7 @@ import { Role } from "../../generated/prisma/enums";
 
 // create user and insert data into database
 const registerUserDB = async (payload: URegister) => {
-  const { name, email, password, bio } = payload;
+  const { name, email, password, bio, profilePhoto } = payload;
 
   const isUserExists = await prisma.user.findUnique({
     where: {
@@ -27,6 +27,7 @@ const registerUserDB = async (payload: URegister) => {
     data: {
       name,
       email,
+      profilePhoto,
       password: hasPassword,
       profile: {
         create: {

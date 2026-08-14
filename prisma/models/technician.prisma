@@ -1,8 +1,12 @@
-model TechnicianProfile {
+model Technician {
   id                String    @id @default(uuid())
   userId            String    @unique
   user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  yearsOfExperience Int?
+  experience   Int?
+  location     String?
+  isVerified   Boolean  @default(true)
+  avgRating    Float    @default(0.0)
+  totalReviews Int      @default(0)
   bio               String?
   certificates      String[]
   services          Service[]
@@ -11,5 +15,6 @@ model TechnicianProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([location, avgRating])
   @@map("technicianProfiles")
 }

@@ -92,16 +92,11 @@ const myProfileDB = async (userId: string) => {
       id: userId,
     },
     omit: {
-      password: true
+      password: true,
     },
     include: {
-      profile: {
-        include: {
-          services: true
-        }
-      },
-      
-    }
+      profile: true,
+    },
   });
 
   if (!user) {

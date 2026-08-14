@@ -8,7 +8,7 @@ const createBookingDB = async (payload: CBooking, customerId: string) => {
   const scheduledDate = new Date(scheduledAt);
   const currentDate = new Date();
 
-  const technician = await prisma.technicianProfile.findUnique({
+  const technician = await prisma.technician.findUnique({
     where: {
       id: technicianId,
     },
@@ -103,7 +103,7 @@ const cancelMyBookingsDB = async (bookingId: string, userId: string) => {
 
 // accept booking only technician
 const acceptBookingDB = async (userId: string, bookingId: string) => {
-  const technicianProfile = await prisma.technicianProfile.findUnique({
+  const technicianProfile = await prisma.technician.findUnique({
     where: { userId },
   });
 
@@ -141,7 +141,7 @@ const acceptBookingDB = async (userId: string, bookingId: string) => {
 
 // get all bookings for technician
 const getTechnicianBookingsDB = async (userId: string) => {
-  const technicianProfile = await prisma.technicianProfile.findUnique({
+  const technicianProfile = await prisma.technician.findUnique({
     where: { userId },
   });
 
