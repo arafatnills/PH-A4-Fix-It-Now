@@ -56,8 +56,8 @@ const getAllServicesDB = async (query: ServiceQuery = {}) => {
 
   // filter
   if (city) where.city = { equals: city, mode: "insensitive" };
-  if (city) where.area = { equals: area, mode: "insensitive" };
-  if (city) where.categoriesId = categoriesId;
+  if (area) where.area = { equals: area, mode: "insensitive" };
+  if (categoriesId) where.categoriesId = categoriesId;
 
   // filter using price
   if (minPrice || maxPrice) {
