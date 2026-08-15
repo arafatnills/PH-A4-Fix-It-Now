@@ -9,7 +9,7 @@ model Service {
   technicianId String
   technician   Technician @relation(fields: [technicianId], references: [id], onDelete: Cascade)
   
-  price        Decimal
+  price        Int
   city         String
   area         String
 
