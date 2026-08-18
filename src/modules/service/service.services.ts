@@ -16,7 +16,7 @@ export type ServiceQuery = {
   q?: string;
   city?: string;
   area?: string;
-  categoriesId?: string;
+  category?: string | string[];
   minPrice?: string;
   maxPrice?: string;
   sort?: string;
@@ -33,9 +33,8 @@ const SORT_MAP: Record<string, Prisma.ServiceOrderByWithRelationInput[]> = {
   name_az: [{ serviceName: "asc" }, { id: "asc" }],
 };
 const getAllServicesDB = async (query: ServiceQuery = {}) => {
-  const { q, city, area, categoriesId, minPrice, maxPrice, sort, page, limit } =
+  const { q, city, area, category, minPrice, maxPrice, sort, page, limit } =
     query;
-
   const currentPage = Math.max(1, Number(page) || 1);
   const parPage = Math.min(50, Math.max(1, Number(limit) || 10));
   const skip = (currentPage - 1) * parPage;
@@ -57,7 +56,12 @@ const getAllServicesDB = async (query: ServiceQuery = {}) => {
   // filter
   if (city) where.city = { equals: city, mode: "insensitive" };
   if (area) where.area = { equals: area, mode: "insensitive" };
-  if (categoriesId) where.categoriesId = categoriesId;
+
+
+  if(category){
+    const categories = Array.isArray(category) ? category : [category]
+    where.category = {name: {in: categories, mode: 'insensitive'}}
+  }
 
   // filter using price
   if (minPrice || maxPrice) {

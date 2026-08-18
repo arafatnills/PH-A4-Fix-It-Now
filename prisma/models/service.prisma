@@ -2,7 +2,8 @@ model Service {
   id           String            @id @default(uuid())
   serviceName  String            @db.VarChar(75)
   description  String  
-  thumbnail    String          
+  thumbnail    String  
+  isPopular    Boolean?           @default(false)        
   
   categoriesId String
   category     Category          @relation(fields: [categoriesId], references: [id], onDelete: Cascade)
