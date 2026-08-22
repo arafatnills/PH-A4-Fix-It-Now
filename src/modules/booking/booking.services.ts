@@ -62,7 +62,13 @@ const getMyBookingsDB = async (customerId: string) => {
       service: {
         select: {
           serviceName: true,
-          price: true
+          price: true,
+        },
+      },
+      payment: {
+        select: {
+          id: true,
+          status: true,
         },
       },
     },

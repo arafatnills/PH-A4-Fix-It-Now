@@ -8,7 +8,7 @@ const router = Router();
 
 router.post(
   "/checkout",
-  auth(Role.CUSTOMER),
+  auth(Role.CUSTOMER, Role.ADMIN),
   paymentControllers.createCheckoutSession,
 );
 

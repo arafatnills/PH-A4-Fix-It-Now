@@ -66,8 +66,8 @@ const createCheckoutSessionDB = async (
     metadata: {
       bookingId: booking.id,
     },
-    success_url: `${config.app_url}/bookings/${booking.id}/payment-success/session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${config.app_url}/bookings/${booking.id}/payment-cancel`,
+    success_url: `${config.app_url_client}/services/${booking.id}/payment-success/session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${config.app_url_client}/services/${booking.id}/payment-cancel`,
   });
 
   if (!isPaymentExists) {
